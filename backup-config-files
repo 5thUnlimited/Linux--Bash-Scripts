@@ -1,0 +1,205 @@
+#! /usr/bin/bash
+
+# Regular Colors
+RED='\033[0;31m'          # Red
+GREEN='\033[0;32m'        # Green
+YELLOW='\033[0;33m'       # Yellow
+WHITE='\033[0;37m'        # White
+# Bold
+BRED='\033[1;31m'         # Red
+BGREEN='\033[1;32m'       # Green
+BYELLOW='\033[1;33m'      # Yellow
+BWHITE='\033[1;37m'       # White
+BBLUE='\033[1;34m'        # Blue
+BPURPLE='\033[1;35m'      # Purple
+BCYAN='\033[1;36m'        # Cyan
+
+IBLUE='\033[0;33m'    # Blue
+IWHITE='\033[0;101m'
+NC='\033[0m' # No Color
+
+RBG='\033[1;47m\033[1;31m'
+# # # # # # # # # # # # # #
+ # # # # # # # # # # # # # #
+# # # # # # # # # # # # # #
+ # # # # # # # # # # # # # #
+
+
+printf "${NC}- - - - -\n"
+#printf "${RBG}- - - - -\n"
+
+###
+### >>> main function for backing up important config files
+###
+BACKUP() {
+
+umask 000
+## Locations that the various conf and rc files should be placed
+BUTIME="$(date +%F-%H:%M:%S)"
+COMMAND="cp -u -a"
+RECURSE="cp -r -a"
+RELDIR="/media/user/Thumbdrive/Backups/Linux/configs"
+
+mkdir -p ${RELDIR}/${BUTIME}
+mkdir -p ${RELDIR}/${BUTIME}/NetworkManager
+mkdir -p ${RELDIR}/${BUTIME}/user
+mkdir -p ${RELDIR}/${BUTIME}/ssh
+mkdir -p ${RELDIR}/${BUTIME}/etc
+mkdir -p ${RELDIR}/${BUTIME}/etc/full
+mkdir -p ${RELDIR}/${BUTIME}/var
+
+
+### >>> User folder is for files that could be placed in either /root or /home/~
+### >>> File structure is NOT exact, it just makes placing file in proper directory easier
+### >>> NetworkManager folder contains files from /etc/systemd/network as well
+    BU=/media/user/Thumbdrive/Backups/Linux/configs/${BUTIME}/
+ SSHBU=/media/user/Thumbdrive/Backups/Linux/configs/${BUTIME}/ssh/
+ NETBU=/media/user/Thumbdrive/Backups/Linux/configs/${BUTIME}/NetworkManager/
+USERBU=/media/user/Thumbdrive/Backups/Linux/configs/${BUTIME}/user/
+ ETCBU=/media/user/Thumbdrive/Backups/Linux/configs/${BUTIME}/etc/
+ETCTAR=/media/user/Thumbdrive/Backups/Linux/configs/${BUTIME}/etc/
+ VARBU=/media/user/Thumbdrive/Backups/Linux/configs/${BUTIME}/var/
+
+printf "${BGREEN}>>>Backing up files to $BU\n\n${BWHITE}"
+
+printf "${BBLACK}${RBG}NOTE -- Subfolders are for ease of use and do not correlate to the exact directories the files belong to.${RED}\n"
+
+###		       ###
+### FILES TO BE COPIED ###
+$COMMAND /home/user/.bashrc $USERBU
+$COMMAND /home/user/.config/btop/btop.conf $USERBU
+$COMMAND /home/user/.config/qterminal.org/qterminal.ini $USERBU
+$COMMAND /home/user/.config/keepassxc/keepassxc.ini $USERBU
+$COMMAND /home/user/.config/an2linux/config $USERBU
+$COMMAND /home/user/.config/bleachbit/bleachbit.ini $USERBU
+$COMMAND /home/user/.config/qBittorrent/* $USERBU
+$COMMAND /home/user/.vnc/passwd $USERBU
+$COMMAND /home/user/.x11vncrc $USERBU
+$COMMAND /home/user/.lynxrc $USERBU
+$COMMAND /home/user/.zshrc $USERBU
+$COMMAND /home/user/zshrc_current $USERBU
+$COMMAND /root/.iftoprc $USERBU
+$COMMAND /root/.config/htop/htoprc $USERBU
+$COMMAND /root/.config/procps/toprc $USERBU
+$COMMAND /root/.config/DanSoft/QNetStatView/qnetstatview.ini $USERBU
+
+# Recurisve copies
+$RECURSE /home/user/.config/filezilla/ $USERBU
+$RECURSE /home/user/.config/VeraCrypt/ $USERBU
+$RECURSE /home/user/.config/xfce4/xfconf/xfce-perchannel-xml/ $USERBU
+
+
+# SSH files
+$COMMAND /etc/ssh/ssh_config.d/ssh.conf $SSHBU
+$COMMAND /etc/ssh/sshd_config.d/sshd.conf $SSHBU
+$COMMAND /home/user/.ssh/known_hosts $SSHBU
+
+# Many important /etc files
+$COMMAND /etc/adduser.conf $ETCBU
+$COMMAND /etc/bmon.conf $ETCBU
+$COMMAND /etc/apt/sources.d/* $ETCBU
+$COMMAND /etc/crypttab $ETCBU
+$COMMAND /etc/dnsmasq.d/*.conf $ETCBU
+$COMMAND /etc/fstab $ETCBU
+$COMMAND /etc/mullvad-vpn/settings.json $ETCBU
+$COMMAND /etc/group $ETCBU
+$COMMAND /etc/hosts $ETCBU
+$COMMAND /etc/lightdm/lightdm.conf.d/* $ETCBU
+$COMMAND /etc/nanorc $ETCBU
+$COMMAND /etc/passwd $ETCBU
+$COMMAND /etc/resolv.conf $ETCBU
+$COMMAND /etc/shadow $ETCBU
+$COMMAND /etc/stubby/stubby.yaml $ETCBU
+$COMMAND /etc/sudoers.d/sudoers_user $ETCBU
+$COMMAND /etc/sudoers.d/sudoers_all_nopasswd $ETCBU
+$COMMAND /etc/sysctl.d/* $ETCBU
+$COMMAND /etc/tuned/profiles/* $ETCBU
+$COMMAND /etc/tuned/tuned-main.conf $ETCBU
+
+
+# Networking and systemd-networkd files
+$COMMAND /etc/NetworkManager/conf.d/* $NETBU
+$COMMAND /etc/NetworkManager/*.conf $NETBU
+$COMMAND /etc/network/interfaces.d/* $NETBU
+$COMMAND /etc/network/interfaces $NETBU
+$COMMAND /etc/systemd/network/* $NETBU
+$COMMAND /usr/share/netfilter-persistent/plugins.d/35-iptables-summary $NETBU
+
+# Other files
+$COMMAND /var/lib/aptitude/pkgstates $VARBU
+$COMMAND /var/lib/apt/extended_states $VARBU
+
+
+### Built in some delay instead of it all happening instantly so notes are readable
+printf "${BYELLOW}...."; sleep .4; printf "${BYELLOW}...."; sleep .4; printf "${BYELLOW}......"; sleep .5
+printf "${BGREEN}\n>>>Config Files have been backed up.\n"
+
+printf "\n${BYELLOW}...."; sleep .5; printf "${BYELLOW}...."; sleep .5; printf "${BYELLOW}......"; sleep .5
+
+# This section creates a full /etc/ backup, maybe overkill
+printf "${NC}${BYELLOW}\n>>>Creating an archived backup of the /etc directory\n";
+(tar -cf $ETCTAR/etc_backup /etc/*) &>/dev/null
+wait $!; sleep 1;
+
+printf "${BYELLOW}\n>>>Also placing files into .../configs/current/ "; sleep 1;
+rm -r /media/user/Thumbdrive/Backups/Linux/configs/current/*
+cp -a -r $BU/* /media/user/Thumbdrive/Backups/Linux/configs/current/ &> /dev/null
+printf "${BGREEN}\n\n>>>All files have been copied\n${BWHITE}\n>>>Total backup:\n${WHITE}"; tree $BU | tail -n 1; du -shx $BU
+printf "\n${NC}"
+}
+
+# # # # # # # # # # # # # #
+ # Other functions
+  # # # # # # # # # # # # # #
+
+RESTORE() {
+printf "${BWHITE}Not implemented ${BWHITE}"
+}
+
+OUTRO() {
+printf "\n\n\n${BCYAN}+ Selected tasks are now complete.\n+ Check github.com/5thUnlimited for other projects\n"
+}
+
+
+
+
+
+# # # # # # # # # # # # # #
+ # Main Body of scripts
+  # # # # # # # # # # # # # #
+
+### Built in prompt to extend script with other backups/options in future
+printf "${BWHITE}Backups will be copied to the .../Backups/Linux/configs/ dir and will be placed in a directory named for the current time+date.\n\n"
+read -p "Enter 1 to proceed or 2 to cancel now:  " CHOICE
+
+
+
+if [ $CHOICE == 1 ];
+
+ then
+   ### Run backup function that copies select files + etc dir
+   echo " "; sleep .5;
+   echo 'Triggering backup...'; sleep 1;
+
+   (
+
+    BACKUP; ls -1 1&>/dev/null;
+
+   )
+   wait $!
+
+   printf "${BGREEN}\n\n>>>Backup Completed${NC}\n\n"
+ else
+   printf "$BRED}Exiting - Operation Canceled.";
+   sleep 1
+   printf "${BRED}>> STOPPING SCRIPT << \n\nGood bye${NC}"
+   exit 0;
+ fi
+
+OUTRO
+
+
+
+
+
+

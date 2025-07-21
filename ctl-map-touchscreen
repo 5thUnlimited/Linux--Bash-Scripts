@@ -1,0 +1,23 @@
+#! /usr/bin/bash
+
+# maps laptop touchscreen correctly when using external monitor without touch capability
+
+NC='\e[0m'
+IGREEN='\033[0;102m'   # Green
+IYELLOW='\033[0;33m'  # Yellow
+BRGREEN='\e[1;4;92;100m'
+
+# old method of finding correct xinput id - corrected below
+#ID=$(xinput list | head |  grep 'ELAN9008:00 04F3:40C3' | cut -c 55-56)
+
+# updated way to get correct xinput id
+ID=$(xinput list | grep ELAN900 | grep -v Stylus | cut -c 55-56)
+
+
+printf "${BRGREEN}Mapping touchscreen\n"
+
+xinput map-to-output $ID eDP-1
+
+printf "\n${NC}Done"
+
+exit 0

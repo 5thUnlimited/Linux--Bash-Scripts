@@ -1,0 +1,50 @@
+#! /usr/bin/bash
+
+# maps laptop touchscreen correctly
+NC='\e[0m'
+
+#       Bold Colors #
+BYELLOW='\033[1;33m'       # Yellow
+ BWHITE='\033[1;37m'        # White
+
+INTENSE='\033[1;4;104m'   # Green
+IWHITE='\033[0;107m'   # White
+# Bold Underlined
+BRGREEN='\e[1;92;100m'
+
+# space before first line of script
+echo '
+
+     '
+printf "\n${INTENSE}Current Backlight Level:${NC}\n${BWHITE}"
+xfpm-power-backlight-helper --get-brightness
+printf "\n${INTENSE}Maximum Backlight Level:${NC}\n${BWHITE}"
+xfpm-power-backlight-helper --get-max-brightness
+
+# used for check of $LEVEL
+MAX=$(xfpm-power-backlight-helper --get-max-brightness)
+
+echo -e  "\n\n * * * * * * * * * * * * * * * * * * * * * * * * * * * *  "
+printf "\n\n${BWHITE}Use CTRL+C to exit without changing the brightness.\n\n"
+
+read -p  "Enter new brightness level ranging from 0 to the max shown above: " LEVEL
+
+
+# Check if valid
+if [ $LEVEL -ge $MAX  ];
+ then
+	printf "${BYELLOW}INVALID NUMBER"
+	exit 1
+ else
+	pkexec xfpm-power-backlight-helper --set-brightness $LEVEL
+fi
+
+
+
+
+
+
+printf "\n\n\n${BRGREEN}FINISHED!${NC}${NC}\n\n"
+
+
+

@@ -15,7 +15,7 @@ Beware as this will make permament changes and deletions to your device.
 # ctl-map-touchscreen
 Remaps a touchscreen monitor to the single screen when there is an additional external monitor attached. This fixes an issue where the touchscreen is misaligned and offset from the pointer. This bug occured on an Asus Zenbook and a Dell Inspiron using Debian 12. Other devices may or may not have this problem.
 
- # info-35-netfilter-status
+ # info-iptables-summary
 For with the package IPtables-Persistent. To use, symlink to /usr/share/netfilter-perisistent/plugins.d/ and your IPtables policies and NAT rules will show up when saving firewall rules with "netfilter-perisistent save"
 
 # info-autoconnect-on
